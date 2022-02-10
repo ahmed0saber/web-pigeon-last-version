@@ -45,6 +45,9 @@
                     <a class="link" href="profile.php"><i class="fa fa-user"></i> Profile</a>
                 </div>
             </div>
+            <div class="nav-btn">
+                <button type="button" onclick="toggle()"><i class="fa fa-bars nav-toggler"></i></button>
+            </div>
         </nav>
     </header>
 
@@ -105,4 +108,5 @@
 </body>
 <script src="./js/theme.js"></script>
 <script src="js/search.js"></script>
+<script src="./js/nav.js"></script>
 </html>

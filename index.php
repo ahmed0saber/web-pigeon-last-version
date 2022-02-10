@@ -34,7 +34,7 @@
     <link href='https://fonts.googleapis.com/css?family=Bree Serif' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body onresize="check_screen()">
     <header>
         <nav>
             <div class="logo">
@@ -46,6 +46,9 @@
                     <a class="link" href="search.php"><i class="fa fa-search"></i> Search</a>
                     <a class="link" href="profile.php"><i class="fa fa-user"></i> Profile</a>
                 </div>
+            </div>
+            <div class="nav-btn">
+                <button type="button" onclick="toggle()"><i class="fa fa-bars nav-toggler"></i></button>
             </div>
         </nav>
     </header>
@@ -88,4 +91,5 @@
     <button onclick="changeTheme()" class="btn-floating"><i class="fa fa-magic"></i></button>
 </body>
 <script src="./js/theme.js"></script>
+<script src="./js/nav.js"></script>
 </html>

@@ -130,6 +130,9 @@ if (isset($_POST['submit'])) { //because this page submits to itself
                     <a class="link active" href="profile.php"><i class="fa fa-user"></i> Profile</a>
                 </div>
             </div>
+            <div class="nav-btn">
+                <button type="button" onclick="toggle()"><i class="fa fa-bars nav-toggler"></i></button>
+            </div>
         </nav>
     </header>
 
@@ -176,4 +179,5 @@ if (isset($_POST['submit'])) { //because this page submits to itself
     <button onclick="changeTheme()" class="btn-floating"><i class="fa fa-magic"></i></button>
 </body>
 <script src="./js/theme.js"></script>
+<script src="./js/nav.js"></script>
 </html>

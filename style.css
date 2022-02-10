@@ -30,6 +30,9 @@ nav{
 nav .logo{
     font-size: 26px;
     color: var(--font);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 nav .logo span{
     color: var(--pri);
@@ -46,6 +49,28 @@ nav .link{
 }
 nav .link.active{
     color: var(--pri);
+}
+nav .nav-btn{
+    display: none;
+}
+nav .nav-btn button{
+    background: var(--nav);
+    border: 2px solid var(--pri);
+    padding: 0px 8px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+nav .nav-btn i.fa{
+    color: var(--pri);
+    background: var(--nav);
+    font-size: 24px;
+    padding: 8px;
+}
+nav .links a i{
+    margin: 0px 2px;
 }
 
 /* bottom navbar */
@@ -181,6 +206,22 @@ main.container.home span{
     }
     nav .links{
         display: none;
+        position: absolute;
+        top: 100%;
+        background-color: var(--nav);
+        width: 100%;
+        left: 0;
+    }
+    nav .links a{
+        display: block;
+        margin: 24px 6px;
+        font-size: 20px;
+    }
+    nav .links a i{
+        margin: 0px 4px;
+    }
+    nav .nav-btn{
+        display: block;
     }
 }
 

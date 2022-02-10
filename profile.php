@@ -9,6 +9,34 @@
 ?>
 
 <?php
+    include 'config.php';
+    //error_reporting(0);
+    if (isset($_POST['fav'])) {
+
+        $msg_id = $_POST['msg_id'];
+        $sql = "SELECT * FROM messages WHERE id='$msg_id'";  
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_row($result);
+        // Free result set
+        unset($result);
+        
+        if($row[5]==0){
+            $sql = "UPDATE messages SET fav = 1 WHERE id = '$msg_id'";
+        }else{
+            $sql = "UPDATE messages SET fav = 0 WHERE id = '$msg_id'";
+        }
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            echo "<script>alert('Your message has been successfully added to favourite.')</script>";
+            header("Location: profile.php");
+        } else {
+            echo "<script>alert('Woops! Something Wrong Went.')</script>";
+        }
+    }
+?>
+
+<?php
     $username = $_SESSION['username'];
     $sql = "SELECT * FROM users WHERE username='$username'";  
     $result = mysqli_query($conn, $sql);
@@ -59,6 +87,9 @@
                     <a class="link active" href="profile.php"><i class="fa fa-user"></i> Profile</a>
                 </div>
             </div>
+            <div class="nav-btn">
+                <button type="button" onclick="toggle()"><i class="fa fa-bars nav-toggler"></i></button>
+            </div>
         </nav>
     </header>
 
@@ -107,6 +138,10 @@
                 ?>
                 Messages Recieved
             </h2>
+            <section class="rec-or-fav">
+                <button onclick="show_rec()">Recieved</button>
+                <button onclick="show_fav()">Favourite</button>
+            </section>
             <section>
                 <form action="#" method="" autocomplete="off">
                     <i class='fa fa-search icon'></i>
@@ -114,15 +149,26 @@
                 </form>
             </section>
             <section class="messages-container" id="myMenu2">
+                <form action="" method="POST" autocomplete="off">
+                    <input type="text" name="msg_id" id="fav_form_txt" value="0" hidden>
+                    <input type="submit" name="fav" id="fav_form_btn" value="not here" hidden>
+                </form>
                 <?php
                     $username = $_SESSION['username'];
                     $sql = "SELECT * FROM messages WHERE receiver='$username' ORDER BY id DESC";  
                     $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_row($result)){
+                        
+                        if($row[5]==1){
+                            $fav = "faved";
+                        }else{
+                            $fav = "not-fav";
+                        }
+
                         echo '
                             <div class="msg">
                                 <span class="msg-num">'.$i.'</span>
-                                <i class="fa fa-star" onclick="add_to_fav(this)"></i>
+                                <i class="fa fa-star ' . $fav . '" onclick="add_to_fav(this, ' . $row[0] . ')"></i>
                                 <p>'. $row[3].'</p>
                                 <p class="msg-date">'.$row[4].'</p>
                             </div>
@@ -133,8 +179,6 @@
                     unset($result);
                 ?>
             </section>
-
-            <section class="fav-messages-container"></section>
         </section>
     </main>
 
@@ -163,6 +207,7 @@
 </body>
 
 <script src="./js/theme.js"></script>
-<script src="js/search.js"></script>
-<script src="js/fav.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/fav.js"></script>
+<script src="./js/nav.js"></script>
 </html>

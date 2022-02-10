@@ -76,6 +76,9 @@
                     <a class="link" href="profile.php"><i class="fa fa-user"></i> Profile</a>
                 </div>
             </div>
+            <div class="nav-btn">
+                <button type="button" onclick="toggle()"><i class="fa fa-bars nav-toggler"></i></button>
+            </div>
         </nav>
     </header>
 
@@ -107,7 +110,7 @@
                 <p>Enter your message here</p>
                 <input type="text" name="receiver" value="<?php echo $row[1]; ?>" hidden>
                 <textarea placeholder="Message" name="message"></textarea>
-                <button name="submit" class="btn">Submit</button>
+                <button name="submit" class="btn">Send</button>
             </form>
         </section>
     </main>
@@ -136,4 +139,5 @@
     <button onclick="changeTheme()" class="btn-floating"><i class="fa fa-magic"></i></button>
 </body>
 <script src="./js/theme.js"></script>
+<script src="./js/nav.js"></script>
 </html>
