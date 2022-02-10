@@ -1,29 +1,39 @@
 <?php 
-include 'config.php';
-session_start();
-//error_reporting(0); //turn off error reporting
+    include 'config.php';
+    session_start();
 
-if (isset($_SESSION['username'])) { //if logged in
-    /*echo "<script>window.location.href='myQuizzes.php;</script>";*/
-    header("Location: profile.php");
-}
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+    //error_reporting(0); //turn off error reporting
 
-if (isset($_POST['submit'])) {
-	$email = $_POST['email'];
-	$password = md5($_POST['password']);  //convert to md5 hash
+    if (isset($_SESSION['username'])) { //if logged in
+        /*echo "<script>window.location.href='myQuizzes.php;</script>";*/
+        header("Location: profile.php");
+    }
 
-	$sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-	$result = mysqli_query($conn, $sql);
-	if ($result->num_rows > 0) //if found
-	{
-		$row = mysqli_fetch_assoc($result);
-		$_SESSION['username'] = $row['username'];
-		/*echo "<script>window.location.href='myQuizzes.php;</script>";*/
-		header("Location: profile.php");
-	} else {
-		echo "<script>alert('Woops! Email or Password is Wrong.')</script>";
-	}
-}
+    if (isset($_POST['submit'])) {
+        $email = mysqli_real_escape_string($conn, test_input($_POST['email']));
+        //$email = test_input($_POST["email"]);
+        //$password = md5($_POST['password']);  //convert to md5 hash
+        $password = mysqli_real_escape_string($conn, md5(test_input($_POST['password'])));
+
+        $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+        $result = mysqli_query($conn, $sql);
+        if ($result->num_rows > 0) //if found
+        {
+            $row = mysqli_fetch_assoc($result);
+            $_SESSION['username'] = $row['username'];
+            /*echo "<script>window.location.href='myQuizzes.php;</script>";*/
+            header("Location: profile.php");
+        } else {
+            echo "<script>alert('Woops! Email or Password is Wrong.')</script>";
+        }
+        header("Location: login.php");
+    }
 ?>
 
 <!DOCTYPE html>

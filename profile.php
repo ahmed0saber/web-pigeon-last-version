@@ -6,14 +6,23 @@
         echo "<script>window.location.href='login.php;</script>";
         header("Location: login.php");
     }
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 ?>
 
 <?php
     include 'config.php';
     //error_reporting(0);
     if (isset($_POST['fav'])) {
-
-        $msg_id = $_POST['msg_id'];
+        $username = mysqli_real_escape_string($conn, test_input($_SESSION['username']));
+        //$username = $_SESSION['username'];
+        $msg_id = mysqli_real_escape_string($conn, test_input($_POST['msg_id']));
+        //$msg_id = $_POST['msg_id'];
         $sql = "SELECT * FROM messages WHERE id='$msg_id'";  
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_row($result);
@@ -21,9 +30,9 @@
         unset($result);
         
         if($row[5]==0){
-            $sql = "UPDATE messages SET fav = 1 WHERE id = '$msg_id'";
+            $sql = "UPDATE messages SET fav = 1 WHERE id = '$msg_id' AND receiver = '$username'";
         }else{
-            $sql = "UPDATE messages SET fav = 0 WHERE id = '$msg_id'";
+            $sql = "UPDATE messages SET fav = 0 WHERE id = '$msg_id' AND receiver = '$username'";
         }
         $result = mysqli_query($conn, $sql);
 
@@ -37,7 +46,28 @@
 ?>
 
 <?php
-    $username = $_SESSION['username'];
+    include 'config.php';
+    //error_reporting(0);
+    if (isset($_POST['del'])) {
+        $username = mysqli_real_escape_string($conn, test_input($_SESSION['username']));
+        //$username = $_SESSION['username'];
+        $msg_id = mysqli_real_escape_string($conn, test_input($_POST['msg_id']));
+        //$msg_id = $_POST['msg_id'];
+        $sql = "UPDATE messages SET del = 1 WHERE id = '$msg_id' AND receiver = '$username'";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result) {
+            echo "<script>alert('Your message has been successfully deleted.')</script>";
+            header("Location: profile.php");
+        } else {
+            echo "<script>alert('Woops! Something Wrong Went.')</script>";
+        }
+    }
+?>
+
+<?php
+    //$username = $_SESSION['username'];
+    $username = mysqli_real_escape_string($conn, test_input($_SESSION['username']));
     $sql = "SELECT * FROM users WHERE username='$username'";  
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_row($result);
@@ -105,8 +135,8 @@
                     <p><?php echo $row[4]?></p>
                 </div>
                 <div class="profile-btns">
-                    <a href="edit.php">Edit Profile</a>
-                    <a href="logout.php">Log out</a>
+                    <a href="edit.php"><i class="fa fa-edit"></i> Edit Profile</a>
+                    <a href="logout.php"><i class="fa fa-sign-out"></i> Log out</a>
                     <a class="copylink" onclick="navigator.clipboard.writeText(`
                         <?php
                             $actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
@@ -116,7 +146,8 @@
                             $url3 = '/send.php?username='.$row[1];
                             echo $url2 . $url3;
                         ?>
-                        `);alert('Link to profile has been copied.');">Copy Link
+                        `);alert('Link to profile has been copied.');">
+                        <i class="fa fa-copy"></i> Copy Link
                     </a>
                 </div>
             </div>
@@ -130,7 +161,9 @@
                     $result = mysqli_query($conn, $sql);
                     $i = 0;
                     while($row = mysqli_fetch_row($result)){
-                        $i++;
+                        if($row[6]==0){
+                            $i++;
+                        }
                     }
                     // Free result set
                     unset($result);
@@ -140,7 +173,7 @@
             </h2>
             <section class="rec-or-fav">
                 <button onclick="show_rec()">Recieved</button>
-                <button onclick="show_fav()">Favourite</button>
+                <button onclick="show_fav()">Favourites</button>
             </section>
             <section>
                 <form action="#" method="" autocomplete="off">
@@ -153,27 +186,35 @@
                     <input type="text" name="msg_id" id="fav_form_txt" value="0" hidden>
                     <input type="submit" name="fav" id="fav_form_btn" value="not here" hidden>
                 </form>
+
+                <form action="" method="POST" autocomplete="off">
+                    <input type="text" name="msg_id" id="del_form_txt" value="0" hidden>
+                    <input type="submit" name="del" id="del_form_btn" value="not here" hidden>
+                </form>
+
                 <?php
                     $username = $_SESSION['username'];
                     $sql = "SELECT * FROM messages WHERE receiver='$username' ORDER BY id DESC";  
                     $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_row($result)){
-                        
-                        if($row[5]==1){
-                            $fav = "faved";
-                        }else{
-                            $fav = "not-fav";
+                        if($row[6]==0){
+                            if($row[5]==1){
+                                $fav = "faved";
+                            }else{
+                                $fav = "not-fav";
+                            }
+    
+                            echo '
+                                <div class="msg">
+                                    <span class="msg-num">'.$i.'</span>
+                                    <i class="fa fa-star ' . $fav . '" onclick="add_to_fav(this, ' . $row[0] . ')"></i>
+                                    <p>'. $row[3].'</p>
+                                    <p class="msg-date">'.$row[4].'</p>
+                                    <button onclick="del_msg(' . $row[0] . ')" class="btn" id="del_btn" type="button"><i class="fa fa-trash"></i> DELETE</button>
+                                </div>
+                                ';
+                            $i--;
                         }
-
-                        echo '
-                            <div class="msg">
-                                <span class="msg-num">'.$i.'</span>
-                                <i class="fa fa-star ' . $fav . '" onclick="add_to_fav(this, ' . $row[0] . ')"></i>
-                                <p>'. $row[3].'</p>
-                                <p class="msg-date">'.$row[4].'</p>
-                            </div>
-                            ';
-                        $i--;
                     }
                     // Free result set
                     unset($result);
@@ -210,4 +251,5 @@
 <script src="./js/search.js"></script>
 <script src="./js/fav.js"></script>
 <script src="./js/nav.js"></script>
+<script src="./js/del.js"></script>
 </html>

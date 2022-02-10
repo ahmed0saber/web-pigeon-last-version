@@ -23,3 +23,7 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+
+function click_file(){
+  document.getElementById("file_btn").click();
+}

@@ -6,14 +6,23 @@
         echo "<script>window.location.href='login.php;</script>";
         header("Location: login.php");
     }
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 ?>
 
 <?php
     include 'config.php';
     //error_reporting(0);
     if(isset($_POST['submit'])){
-        $username = $_SESSION['username'];
-        $bio = $_POST['bio'];
+        $username = mysqli_real_escape_string($conn, test_input($_SESSION['username']));
+        //$username = $_SESSION['username'];
+        $bio = mysqli_real_escape_string($conn, test_input($_POST['bio']));
+        //$bio = test_input($_POST["bio"]);
         $sql = "UPDATE users SET bio = '$bio' WHERE username = '$username'";
         $result = mysqli_query($conn, $sql);
     }
@@ -31,7 +40,7 @@
             $types = ["image/jpeg", "image/jpg", "image/png"];
             if(in_array($img_type, $types) === true){
                 $time = time();
-                $new_img_name = $time.$img_name;
+                $new_img_name = test_input($time.$img_name);
                 if(move_uploaded_file($tmp_name,"images/".$new_img_name)){
                     $username = $_SESSION['username'];
 
@@ -53,6 +62,7 @@
         }else{
             echo "Please upload an image file - jpeg, png, jpg";
         }
+        header("Location: edit.php");
     }
 ?>
 
@@ -157,7 +167,7 @@
                     <form method="POST" action="" enctype="multipart/form-data">
                         <button type="button" id="myBtn"><i class="fa fa-plus-circle"></i> Upload Picture</button>
                         
-                        <button type="submit" id="myBtn" name="public">
+                        <button type="submit" name="public">
                             <i class="fa fa-users"></i> Set Profile As
                             <?php
                                 if($row[6]==0){
@@ -169,7 +179,7 @@
                         </button>
 
                         <div style="margin-top:12px">
-                        <a href="profile.php"><i class="fa fa-arrow-left"></i> Back To Profile</a>
+                            <a href="profile.php"><i class="fa fa-arrow-left"></i> Back To Profile</a>
                         </div>
                         <!-- The Modal -->
                         <div id="myModal" class="modal">
@@ -180,7 +190,8 @@
                                     <span class="close">&times;</span>
                                 </div>
                                 <div class="modal-body">
-                                    <input type="file" name="image" class="imgfile" accept="image/x-png,image/gif,image/jpeg,image/jpg">
+                                    <input type="file" name="image" id="file_btn" class="imgfile" accept="image/x-png,image/gif,image/jpeg,image/jpg" hidden>
+                                    <button type="button" class="btn" id="choose_btn" onclick="click_file()">Choose From Device</button><br>
                                     <button type="submit" name="upload" class="next action-button" >Upload</button> <button type="button" name="previous" class="previous action-button-previous" onclick="modal.style.display = 'none'">Cancel</button>
                                 </div>
                             </div>

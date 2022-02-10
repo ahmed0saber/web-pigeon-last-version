@@ -511,6 +511,17 @@ main.container.profile .messages form .icon {
 .copylink {
     cursor: pointer;
 }
+#del_btn{
+    border: 2px solid #f00;
+    color: #f00;
+    background-color: #0000;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    margin: 15px 0px 0px 0px;
+}
 
 /* media queries */
 @media screen and (max-width: 900px) {
@@ -714,6 +725,9 @@ section.container.edit .btn{
     font-size: 16px;
     border: 2px solid #12121221;
     border-radius: 4px;
+}
+#choose_btn{
+    margin: 4px 4px 40px 4px;
 }
 
 

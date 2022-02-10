@@ -1,9 +1,18 @@
 <?php
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
     include 'config.php';
     //error_reporting(0);
     if (isset($_POST['submit'])) {
-        $receiver = $_POST['receiver'];
-        $message = $_POST['message'];
+        //$receiver = $_POST['receiver'];
+        $receiver = mysqli_real_escape_string($conn, test_input($_POST['receiver']));
+        //$message = test_input($_POST["message"]);
+        $message = mysqli_real_escape_string($conn, test_input($_POST['message']));
 
         session_start();
         if (!isset($_SESSION['username'])) { //if user went here without login
@@ -14,8 +23,8 @@
 
         $date = date("d/m/Y \t h:i:s A") . " (GMT+1)";
 
-        $sql = "INSERT INTO messages (receiver, msg, sender, date)
-                VALUES ('$receiver', '$message', '$sender', '$date')"; //add a row to the table
+        $sql = "INSERT INTO messages (receiver, msg, sender, date, fav, del)
+                VALUES ('$receiver', '$message', '$sender', '$date', 0, 0)"; //add a row to the table
         $result = mysqli_query($conn, $sql);
         if ($result) {
             echo "<script>alert('Your message has been successfully sent.')</script>";

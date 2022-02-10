@@ -1,6 +1,6 @@
 <?php
     include 'config.php';
-    error_reporting(0);
+    //error_reporting(0);
     session_start();
 ?>
 <!DOCTYPE html>
@@ -63,7 +63,6 @@
         <section class="search-results" id="myMenu">
             <div id="myMenu">
                 <?php
-                    $username = $_SESSION['username'];
                     $sql = "SELECT * FROM users WHERE public = 1 ORDER BY id";  
                     $result = mysqli_query($conn, $sql);
                     while($row = mysqli_fetch_row($result)){
